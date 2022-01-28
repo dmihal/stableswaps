@@ -16,8 +16,6 @@ const Row: React.FC<RowProps> = ({ protocol }) => {
   const plausible = usePlausible();
   const [open, setOpen] = useState(false);
 
-  const isApp = protocol.metadata.category !== 'l1' && protocol.metadata.category !== 'l2';
-
   return (
     <Fragment>
       <div
@@ -29,23 +27,19 @@ const Row: React.FC<RowProps> = ({ protocol }) => {
             },
           });
         }}
-        className={`item ${isApp ? 'app' : ''} ${open ? 'open' : ''}`}
+        className={`item ${open ? 'open' : ''}`}
         style={{
-          backgroundImage: protocol.metadata.icon ? `url('${protocol.metadata.icon}')` : undefined,
+          backgroundImage: protocol.icon ? `url('${protocol.icon}')` : undefined,
         }}
       >
-        <div className="name">{protocol.metadata.name}</div>
+        <div className="name">{protocol.name}</div>
         <div className="amount">
-          {(protocol.results.issuanceRateCurrent * 100).toLocaleString('en-US', {
+          ${protocol.total.toLocaleString('en-US', {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
-          })}%
+          })}
         </div>
         <div className="amount">
-          {protocol.results.issuance7DayAvgUSD.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          })}
         </div>
         <div className="arrow">{open ? <ChevronUp /> : <ChevronDown />}</div>
       </div>

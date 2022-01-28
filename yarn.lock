@@ -97,10 +97,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cryptostats/sdk@^0.0.43":
-  version "0.0.43"
-  resolved "https://registry.yarnpkg.com/@cryptostats/sdk/-/sdk-0.0.43.tgz#f41dc26cbef1c5b0047a260a207f5e7f8a0ccd51"
-  integrity sha512-828zHzybCZ6+NSMLOlpaFtD7Anof3sF3+qDFb20Y2vVawKRxK65pSVUNjc0g2Kg02VTv6A9144X4IKsvFvtQYg==
+"@cryptostats/sdk@^0.2.6":
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@cryptostats/sdk/-/sdk-0.2.6.tgz#8e971b1cd4b13526c9c0ae56be4cf33a9e33bec2"
+  integrity sha512-itE7KValG/ImNvukdh6GqiFkW1iGkiI4w2po6fiMBZl+apxiVZRtL9vkz0jwRtzSY/TDMAPCqdeR1CPeecl/EA==
   dependencies:
     date-fns "^2.22.1"
     ethers "^5.4.4"

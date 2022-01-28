@@ -9,19 +9,24 @@ interface HomeProps {
 }
 
 export const Home: NextPage<HomeProps> = ({ data }) => {
+  const _data: any[] = []
+  const dataByProtocol: any = {}
+  for (const item of data[data.length - 1].values) {
+    if (!dataByProtocol[item.protocol]) {
+      dataByProtocol[item.protocol] = { name: item.protocol, total: 0 }
+      _data.push(dataByProtocol[item.protocol])
+    }
+    dataByProtocol[item.protocol].total += item.value
+  }
+
   return (
     <main>
       <SocialTags />
 
-      <h1 className="title">Money Printer</h1>
+      <h1 className="title">StableSwaps.info</h1>
 
       <p className="description">
-        How much money are protocols paying to grow?
-      </p>
-
-      <p>
-        Like this site?{' '}
-        <a href="https://gitcoin.co/grants/1624/cryptofees-info">Support it on Gitcoin Grants</a>
+        Which DEX is swapping the most assets?
       </p>
 
       <div>
@@ -35,7 +40,8 @@ export const Home: NextPage<HomeProps> = ({ data }) => {
         <script async src="https://platform.twitter.com/widgets.js"></script>
       </div>
 
-      <List data={data} />
+      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <List data={_data} />
 
       <style jsx>{`
         main {
@@ -77,9 +83,34 @@ export const Home: NextPage<HomeProps> = ({ data }) => {
  * Visit https://cryptostats.community/discover/issuance to see the code for these adapters
  */
 export const getStaticProps: GetStaticProps = async () => {
-  const list = sdk.getList('issuance')
-  await list.fetchAdapters()
-  const data = await list.executeQueriesWithMetadata(['issuance7DayAvgUSD', 'issuanceRateCurrent'])
+  const list = sdk.getCollection('stable-swaps')
+  await list.fetchAdapterFromIPFS('QmPsskcHLPjFQqN55yvGyPAKBwWkb1VBoRPbucoht52LcW')
+  const adapters = list.getAdapters()
+
+  const today = sdk.date.formatDate(new Date)
+  const startDate = sdk.date.offsetDaysFormatted(today, -5)
+
+  let data = []
+  const assets = ['usd', 'eur', 'btc', 'eth']
+
+  for (let date = startDate; sdk.date.isBefore(date, today); date = sdk.date.offsetDaysFormatted(date, 1)) {
+    const values = await Promise.all(adapters.map(adapter =>
+      Promise.all(assets.map(async asset => ({
+          protocol: adapter.id,
+          asset,
+          date,
+          value: await adapter.executeQuery('oneDayTotalVolumeUSDByAsset', asset, date)
+        })
+      ))))
+    
+    const valuesFlat = values.reduce((flat, current) => [...flat, ...current], [])
+
+    if (date === '2022-03-01') {
+      break
+    }
+
+    data.push({ date, values: valuesFlat })
+  }
 
   return { props: { data }, revalidate: 60 };
 };

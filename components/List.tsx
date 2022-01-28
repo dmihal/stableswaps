@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Row from './Row';
+import Row from './Row'
 
 interface ListProps {
   data: any[]
@@ -10,8 +10,8 @@ enum SORT {
   RATE,
 }
 
-const sortByUSD = (a: any, b: any) => b.results.issuance7DayAvgUSD - a.results.issuance7DayAvgUSD
-const sortByRate = (a: any, b: any) => b.results.issuanceRateCurrent - a.results.issuanceRateCurrent
+const sortByUSD = (a: any, b: any) => b.total - a.total
+const sortByRate = (a: any, b: any) => b.results.volume - a.results.volume
 
 const List: React.FC<ListProps> = ({ data }) => {
   const [sort, setSort] = useState<SORT>(SORT.USD);
